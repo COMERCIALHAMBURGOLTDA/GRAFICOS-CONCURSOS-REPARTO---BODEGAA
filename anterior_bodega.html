@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resultados Concurso</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f2f2f2; color:#111; padding:40px; }
+    h1#titulo { background:#1976d2; color:#fff; padding:25px; border-radius:12px; text-align:center; font-size:2em; box-shadow:0 6px 12px rgba(0,0,0,.2); margin-bottom:30px; }
+    table { border-collapse:collapse; width:100%; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+    th, td { padding:16px 18px; border:1px solid #ddd; }
+    th { background:#1976d2; color:#fff; text-transform:uppercase; font-size:.9em; letter-spacing:.5px; }
+    tr:nth-child(even) td { background:#f9f9f9; }
+    tr:hover td { background:#e9f0f8; }
+    .medal { font-size:1.4em; text-align:center; }
+    td.lugar { text-align:center; font-weight:bold; }
+    td.chofer { font-weight:600; }
+  </style>
+</head>
+<body>
+  <h1 id="titulo">Cargando título...</h1>
+  <div id="table-container">Cargando datos...</div>
+
+  <script>
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRU5OQHyRj-OXlfqf9yxT0E8YoBnDVksnXRSZBPDCHBfs5o0Kn70vTJ7oGXY6PfxDrLDj5PaOu6Rbtb/pub?gid=960079246&single=true&output=csv";
+
+    Papa.parse(csvUrl, {
+      download: true,
+      header: false,
+      complete: function(results) {
+        const rows = results.data || [];
+
+        // === TÍTULO: A6 ===
+        const titulo = (rows[4] && rows[4][0]) ? rows[4][0].trim() : "Sin título";
+        document.getElementById("titulo").innerText = titulo;
+
+        // === DATOS: A1:B4 ===
+        const data = rows.slice(0, 4).map(r => [r?.[0]?.trim() || "", r?.[1]?.trim() || ""])
+                      .filter(r => r[0] && r[1] && r[0].toLowerCase() !== "nombre");
+
+        const container = document.getElementById("table-container");
+        if (data.length === 0) {
+          container.innerHTML = "No hay datos.";
+          return;
+        }
+
+        // === RENDER TABLA ===
+        const headers = [" ", "Lugar", "Chofer"];
+        let html = "<table><thead><tr>";
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += "</tr></thead><tbody>";
+
+        data.forEach((row, index) => {
+          const chofer = row[0];
+          const lugar = row[1];
+          const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "🎖️";
+
+          html += `
+            <tr>
+              <td class="medal">${medal}</td>
+              <td class="lugar">${lugar}</td>
+              <td class="chofer">${chofer}</td>
+            </tr>`;
+        });
+
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      }
+    });
+  </script>
+</body>
+</html>
