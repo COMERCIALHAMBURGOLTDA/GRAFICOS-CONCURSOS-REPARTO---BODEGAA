@@ -14,7 +14,7 @@
     tr:hover td { background:#e9f0f8; }
     .medal { font-size:1.4em; text-align:center; }
     td.lugar { text-align:center; font-weight:bold; }
-    td.chofer { font-weight:600; }
+    td.bodeguero { font-weight:600; }
   </style>
 </head>
 <body>
@@ -51,7 +51,7 @@
         html += "</tr></thead><tbody>";
 
         data.forEach((row, index) => {
-          const chofer = row[0];
+          const bodeguero = row[0];
           const lugar = row[1];
           const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "🎖️";
 
@@ -59,7 +59,7 @@
             <tr>
               <td class="medal">${medal}</td>
               <td class="lugar">${lugar}</td>
-              <td class="chofer">${chofer}</td>
+              <td class="bodeguero">${bodeguero}</td>
             </tr>`;
         });
 
@@ -70,4 +70,5 @@
   </script>
 </body>
 </html>
+
 
